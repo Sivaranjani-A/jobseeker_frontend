@@ -15,6 +15,8 @@ import Verification from "./components/verification";
 import ChangePassword from "./components/changepassword";
 
 import JobsList from "./components/JobsList";
+import Jobseekers from "./components/Jobseekers";
+import Profileview from "./components/Profileview";
 
 function App() {
   const navigate = useNavigate();
@@ -44,6 +46,11 @@ function App() {
             </Button>
           ) : null}
           {token ? (
+            <Button onClick={() => navigate("/jobseekers")} color="inherit">
+              Jobseekers List
+            </Button>
+          ) : null}
+          {token ? (
             <Button onClick={() => navigate("/addprofile")} color="inherit">
               Profile
             </Button>
@@ -70,8 +77,8 @@ function App() {
           <Route path="/Verification" element={<Verification />} />
           <Route path="/ChangePassword" element={<ChangePassword />} />
           <Route path="/jobs" element={<JobsList />} />
-
-          {/* <Route path="/editprofile" element={<EditProfile />} /> */}
+          <Route path="/jobseekers" element={<Jobseekers />} />
+          <Route path="/list/:id" element={<Profileview />} />
           {profile === "true" ? (
             <Route path="/addprofile" element={<EditProfile />} />
           ) : (
