@@ -5,7 +5,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { API } from "../global";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { BlobServiceClient } from "@azure/storage-blob";
 const profilevalidationSchema = yup.object({
   Name: yup.string().required(),
   DOB: yup.string().required(),
@@ -13,11 +14,25 @@ const profilevalidationSchema = yup.object({
   Whatsapp_Number: yup.number().required(),
   Educational_Qualification: yup.string().required(),
   Experience: yup.number().required(),
-  Resume: yup.string().required().url(),
 });
 
 export function EditProfile() {
   //navigate hook
+  const [resume, setresume] = useState("");
+  const inputclicked = async (event) => {
+    const file = event.target.files;
+
+    console.log(file[0]);
+    const blobServiceClient = new BlobServiceClient(
+      "https://firsttesting1234.blob.core.windows.net/fortesting?sp=racwdl&st=2023-06-14T17:43:42Z&se=2023-07-28T01:43:42Z&sv=2022-11-02&sr=c&sig=%2BYpcgvO4QtMvULsX2n5kj59K5c7PjEOlznoT3hzDG6c%3D"
+    );
+    const containerClient = blobServiceClient.getContainerClient("A");
+
+    const blockBlobClient = containerClient.getBlockBlobClient(file[0].name);
+    await blockBlobClient.uploadData(file[0]);
+
+    setresume(blockBlobClient.url);
+  };
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
   useEffect(() => {
@@ -27,6 +42,7 @@ export function EditProfile() {
   let getProfile = async () => {
     try {
       const details = await axios.get(`${API}/user/profile/${email}`);
+      console.log(details.data);
       formik.setValues(details.data);
     } catch (error) {
       console.log(error);
@@ -44,7 +60,15 @@ export function EditProfile() {
     },
     validationSchema: profilevalidationSchema,
     onSubmit: async (values) => {
-      const profile = await axios.put(`${API}/user/profile/${email}`, values);
+      const profile = await axios.put(`${API}/user/profile/${email}`, {
+        Name: values.Name,
+        DOB: values.DOB,
+        Contact_Number: values.Contact_Number,
+        Whatsapp_Number: values.Whatsapp_Number,
+        Educational_Qualification: values.Educational_Qualification,
+        Experience: values.Experience,
+        Resume: resume,
+      });
       alert(profile.data.message);
     },
   });
@@ -212,7 +236,6 @@ export function EditProfile() {
         }
       />
       <TextField
-        label="Resume URL"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -225,17 +248,11 @@ export function EditProfile() {
             </InputAdornment>
           ),
         }}
+        type="file"
         variant="outlined"
-        value={formik.values.Resume}
         name="Resume"
-        onChange={formik.handleChange}
+        onChange={inputclicked}
         onBlur={formik.handleBlur}
-        error={formik.touched.Resume && formik.errors.Resume}
-        helperText={
-          formik.touched.Resume && formik.errors.Resume
-            ? formik.errors.Resume
-            : null
-        }
       />
 
       <Button variant="contained" type="submit">

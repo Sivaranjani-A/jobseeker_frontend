@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { API } from "../global";
 import axios from "axios";
+import { BlobServiceClient } from "@azure/storage-blob";
+import { useState } from "react";
 
 const profilevalidationSchema = yup.object({
   Name: yup.string().required(),
@@ -13,10 +15,24 @@ const profilevalidationSchema = yup.object({
   Whatsapp_Number: yup.number().required(),
   Educational_Qualification: yup.string().required(),
   Experience: yup.number().required(),
-  Resume: yup.string().required().url(),
 });
 
 export function AddProfile() {
+  const [resume, setresume] = useState("");
+  const inputclicked = async (event) => {
+    const file = event.target.files;
+
+    console.log(file[0]);
+    const blobServiceClient = new BlobServiceClient(
+      "https://firsttesting1234.blob.core.windows.net/fortesting?sp=racwdl&st=2023-06-14T17:43:42Z&se=2023-07-28T01:43:42Z&sv=2022-11-02&sr=c&sig=%2BYpcgvO4QtMvULsX2n5kj59K5c7PjEOlznoT3hzDG6c%3D"
+    );
+    const containerClient = blobServiceClient.getContainerClient("A");
+
+    const blockBlobClient = containerClient.getBlockBlobClient(file[0].name);
+    await blockBlobClient.uploadData(file[0]);
+
+    setresume(blockBlobClient.url);
+  };
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
   const formik = useFormik({
@@ -32,7 +48,15 @@ export function AddProfile() {
     validationSchema: profilevalidationSchema,
     onSubmit: async (values) => {
       console.log(values);
-      const profile = await axios.post(`${API}/user/profile/${email}`, values);
+      const profile = await axios.post(`${API}/user/profile/${email}`, {
+        Name: values.Name,
+        DOB: values.DOB,
+        Contact_Number: values.Contact_Number,
+        Whatsapp_Number: values.Whatsapp_Number,
+        Educational_Qualification: values.Educational_Qualification,
+        Experience: values.Experience,
+        Resume: resume,
+      });
       alert(profile.data.message);
     },
   });
@@ -200,7 +224,6 @@ export function AddProfile() {
         }
       />
       <TextField
-        label="Resume URL"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -213,18 +236,13 @@ export function AddProfile() {
             </InputAdornment>
           ),
         }}
+        type="file"
         variant="outlined"
-        value={formik.values.Resume}
         name="Resume"
-        onChange={formik.handleChange}
+        onChange={inputclicked}
         onBlur={formik.handleBlur}
-        error={formik.touched.Resume && formik.errors.Resume}
-        helperText={
-          formik.touched.Resume && formik.errors.Resume
-            ? formik.errors.Resume
-            : null
-        }
       />
+      {/* <input type="file" onChange={inputclicked} name="resume" /> */}
 
       <Button variant="contained" type="submit">
         Add
