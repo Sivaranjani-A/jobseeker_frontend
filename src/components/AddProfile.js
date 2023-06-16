@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import { TextField } from "@mui/material";
+import { InputAdornment, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -41,6 +41,18 @@ export function AddProfile() {
     <form className="add-profile-form" onSubmit={formik.handleSubmit}>
       <TextField
         label="Name"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography
+                variant="body2"
+                style={{ color: "red", marginTop: 1, marginBottom: 16 }}
+              >
+                *
+              </Typography>
+            </InputAdornment>
+          ),
+        }}
         variant="outlined"
         value={formik.values.Name}
         name="Name"
@@ -53,6 +65,18 @@ export function AddProfile() {
       />
       <TextField
         variant="outlined"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography
+                variant="body2"
+                style={{ color: "red", marginTop: 1, marginBottom: 16 }}
+              >
+                *
+              </Typography>
+            </InputAdornment>
+          ),
+        }}
         type="date"
         value={formik.values.DOB}
         name="DOB"
@@ -66,6 +90,18 @@ export function AddProfile() {
 
       <TextField
         label="Contact Number"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography
+                variant="body2"
+                style={{ color: "red", marginTop: 1, marginBottom: 16 }}
+              >
+                *
+              </Typography>
+            </InputAdornment>
+          ),
+        }}
         variant="outlined"
         value={formik.values.Contact_Number}
         name="Contact_Number"
@@ -81,6 +117,18 @@ export function AddProfile() {
 
       <TextField
         label="Whatsapp Number"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography
+                variant="body2"
+                style={{ color: "red", marginTop: 1, marginBottom: 16 }}
+              >
+                *
+              </Typography>
+            </InputAdornment>
+          ),
+        }}
         variant="outlined"
         value={formik.values.Whatsapp_Number}
         name="Whatsapp_Number"
@@ -96,6 +144,18 @@ export function AddProfile() {
 
       <TextField
         label="Educational Qualification"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography
+                variant="body2"
+                style={{ color: "red", marginTop: 1, marginBottom: 16 }}
+              >
+                *
+              </Typography>
+            </InputAdornment>
+          ),
+        }}
         variant="outlined"
         value={formik.values.Educational_Qualification}
         name="Educational_Qualification"
@@ -115,6 +175,18 @@ export function AddProfile() {
 
       <TextField
         label="Experience"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography
+                variant="body2"
+                style={{ color: "red", marginTop: 1, marginBottom: 16 }}
+              >
+                *
+              </Typography>
+            </InputAdornment>
+          ),
+        }}
         variant="outlined"
         value={formik.values.Experience}
         name="Experience"
@@ -129,6 +201,18 @@ export function AddProfile() {
       />
       <TextField
         label="Resume URL"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography
+                variant="body2"
+                style={{ color: "red", marginTop: 1, marginBottom: 16 }}
+              >
+                *
+              </Typography>
+            </InputAdornment>
+          ),
+        }}
         variant="outlined"
         value={formik.values.Resume}
         name="Resume"
