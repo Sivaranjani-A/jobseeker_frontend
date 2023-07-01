@@ -28,11 +28,13 @@ function Signup() {
       onSubmit: async (values) => {
         try {
           const register = await axios.post(`${API}/user/register`, values);
+          console.log(register)
           alert(register.data.message);
           navigate("/");
         } catch (error) {
-          alert(error.response.message);
           console.log(error);
+          alert(error.response.message);
+          
         }
       },
     });
